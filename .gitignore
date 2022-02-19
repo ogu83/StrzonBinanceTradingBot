@@ -2,3 +2,5 @@
 /obj
 /*.db*
 /.vscode
+app.db-shm
+app.db-wal

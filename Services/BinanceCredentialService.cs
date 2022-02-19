@@ -6,13 +6,14 @@ namespace StrzonBinanceTradingBot.Services;
 public class BinanceCredentialService : IBinanceCredentialService
 {
     private readonly ApplicationDbContext _context;
-
+    private readonly ILogger<BinanceCredentialService> _logger;
     private readonly IAES _aes;
 
-    public BinanceCredentialService(ApplicationDbContext context, IAES aes)
+    public BinanceCredentialService(ApplicationDbContext context, IAES aes, ILogger<BinanceCredentialService> logger)
     {
         _context = context;
         _aes = aes;
+        _logger = logger;
     }
 
     private BinanceCredentialEntity Encrypt(BinanceCredentialEntity entity)

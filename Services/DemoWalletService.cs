@@ -5,10 +5,12 @@ namespace StrzonBinanceTradingBot.Services;
 public class DemoWalletService : IDemoWalletService
 {
     private readonly ApplicationDbContext _context;
+    private readonly ILogger<DemoWalletService> _logger;
 
-    public DemoWalletService(ApplicationDbContext context)
+    public DemoWalletService(ApplicationDbContext context, ILogger<DemoWalletService> logger)
     {
         _context = context;
+        _logger = logger;
     }
 
     public DemoWalletEntity? Create(decimal usdtBalance, string userName)

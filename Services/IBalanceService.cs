@@ -12,4 +12,5 @@ public interface IBalanceService
     List<BalanceEntity>? GetBalancesOfWallet(int walletId, string userName);
     BalanceEntity? Lock(string symbol, int walletId, string userName);
     BalanceEntity? Unlock(string symbol, int walletId, string userName);
+    List<BalanceEntity>? GetLockedBalances(bool onlyDemoWallets);
 }

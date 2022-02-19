@@ -21,4 +21,9 @@ public class TradeEntity : BaseDemoWalletEntity
     public decimal USDTRate { get; set; }
 
     public decimal AmountInUSDT { get { return USDTRate * Amount; } }
+
+    public override string ToString()
+    {
+        return $"A {Enum.GetName<TradeType>(Type)} trade for {Symbol} with amount {Amount} ({AmountInUSDT} USDT) at {Date.ToLocalTime().ToString()}";
+    }
 }

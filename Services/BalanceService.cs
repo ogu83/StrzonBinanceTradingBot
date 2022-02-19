@@ -117,7 +117,7 @@ public class BalanceService : IBalanceService
         return entity;
     }
 
-    public BalanceEntity? Update(int id, decimal rate, decimal amount,BalanceHistoryEntity.Action reason)
+    public BalanceEntity? Update(int id, decimal rate, decimal amount, BalanceHistoryEntity.Action reason)
     {
         var entity = Get(id);
         if (entity != null)
@@ -126,9 +126,20 @@ public class BalanceService : IBalanceService
             entity.Amount = amount;
             _context.Update(entity);
             _context.SaveChanges();
-            
+
             addBalanceLog(entity.DemoWallet_ID ?? 0, entity.IdentityUserName ?? "", reason);
         }
         return entity;
+    }
+
+    public List<BalanceEntity>? GetLockedBalances(bool onlyDemoWallets)
+    {
+        var query = _context.Balances?.Where(x => x.IsLocked);
+        if (onlyDemoWallets)
+        {
+            query = query?.Where(x => x.DemoWallet_ID != null);
+        }
+        var retval = query?.ToList();       
+        return retval;
     }
 }

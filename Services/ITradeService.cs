@@ -13,4 +13,6 @@ public interface ITradeService
         TradeEntity.TradeType tradeType);
 
     List<TradeEntity>? TradesOfDemoWallet(int walletId);
+
+    Task CheckLockedDemoProfits();
 }
