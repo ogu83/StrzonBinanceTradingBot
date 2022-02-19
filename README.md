@@ -23,7 +23,7 @@ If not installed please install dotnet-ef to apply migrations over db.
 dotnet tool install --global dotnet-ef
 ```
 
-Edit the default connection string at [appSettings.json](appSettings.json). The default is *Server=127.0.0.1;Database=KopiorQuesta-Marketplace;User Id=sa;Password=Sa12345678*;*
+Edit the default connection string at [appSettings.json](appSettings.json). The default is *"DataSource=app.db;Cache=Shared*
 
 ### Sqllite
 Run this command to apply database schema and seed data to database.
