@@ -14,13 +14,18 @@ builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews().AddJsonOptions(options =>
+                {
+                    // Use the default property (Pascal) casing.
+                    options.JsonSerializerOptions.PropertyNamingPolicy = null;
+                });
 
 var settings = new Settings
 {
     aesKey = builder.Configuration.GetSection("AESEncryptionKey").Value.ToString(),
     scheduledTaskInterval = short.Parse(builder.Configuration.GetSection("ScheduledTaskInterval").Value),
-    maxAllowedSlipage = decimal.Parse(builder.Configuration.GetSection("MaxAllowedSlipage").Value)
+    maxAllowedSlipage = decimal.Parse(builder.Configuration.GetSection("MaxAllowedSlipage").Value),
+    demoWalletInitialBalance = decimal.Parse(builder.Configuration.GetSection("DemoWalletInitialBalance").Value)
 };
 builder.Services.AddSingleton<Settings>(settings);
 

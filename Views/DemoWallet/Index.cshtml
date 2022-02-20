@@ -1,0 +1,37 @@
+@{
+    ViewData["Title"] = "Demo Wallet";
+}
+
+<h2>Demo Wallet</h2>
+<p>This is a demo wallet, none of those transactions and balances are real. No real account is effected. This is a simulation of Lock Profit.</p>
+<h4><span class="text-muted">Available USDT Balance: </span><span id="txtBalance"></span></h3>
+<h4><span class="text-muted">Total USDT Balance: </span><span id="txtTotalBalance"></span></h3>
+
+@section Scripts {
+    <script>
+
+        function GetBalances() {
+            $.ajax({
+                url: "/DemoWallet/GetBalances",
+                method: "POST",
+                dataType: "json",
+                data: {},
+                success: function(result) {
+                    if (result.IsSuccess)
+                    {
+                        $("#txtBalance").html(result.USDTBalanceStr);
+                        $("#txtTotalBalance").html(result.TotalBalanceInUSDTStr);
+                    }
+                },
+                error: function() {
+
+                },
+                timeout: 50000
+            });
+        }
+
+        $(function() {
+            GetBalances();
+        });
+    </script>
+}
