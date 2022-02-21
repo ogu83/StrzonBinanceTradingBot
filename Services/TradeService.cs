@@ -73,7 +73,7 @@ public class TradeService : ITradeService
             else if (price.Price > (1 + _settings.maxAllowedSlipage) * balance.USDTRate)
             {
                 _logger.LogInformation($"Current price is HIGHER than locket price for {balance.Symbol}, BUY it");
-                
+
                 var wallet = _demoWalletService.Get(balance.DemoWallet_ID ?? 0);
                 if (wallet == null)
                 {
@@ -88,17 +88,17 @@ public class TradeService : ITradeService
                 }
 
                 _logger.LogInformation($"Locked {balance.Symbol} amount is {balance.LockAmount}.");
-                
+
                 var buyBackAmountInUSDT = balance.LockAmount * price.Price;
                 _logger.LogInformation($"{buyBackAmountInUSDT} USDT is neccesary to buy back {balance.LockAmount}.");
                 _logger.LogInformation($"demo wallet of {balance.IdentityUserName} has {wallet?.USDTBalance} USDT.");
-                
+
                 var amount = balance.LockAmount;
                 if (wallet.USDTBalance >= buyBackAmountInUSDT)
                 {
                     _logger.LogInformation($"Demo wallet has sufficient funds to BUY {balance.LockAmount} {balance.Symbol}.");
                 }
-                else 
+                else
                 {
                     _logger.LogInformation($"Demo wallet has insufficient funds to BUY {balance.LockAmount} {balance.Symbol}.");
                     amount = wallet.USDTBalance / price.Price;
@@ -185,7 +185,10 @@ public class TradeService : ITradeService
 
     public List<TradeEntity>? TradesOfDemoWallet(int walletId)
     {
-        var retval = _context.Trades?.Where(x => x.DemoWallet_ID == walletId).ToList();
+        var retval = _context.Trades?
+                             .Where(x => x.DemoWallet_ID == walletId)
+                             .OrderByDescending(x => x.Date)
+                             .ToList();
         return retval;
     }
 }

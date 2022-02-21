@@ -79,8 +79,67 @@
     </div>
 </div>
 
+<div class="card">
+    <div class="card-header">
+        List Of Trades
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <table class="table table-striped">
+                    <thread>
+                        <tr>
+                            <th scope="col">Date</th>
+                            <th scope="col">Symbol</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Total</th>
+                        </tr>
+                    </thread>
+                    <tbody id="tblTradesBody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
 <script>
+
+    function GetTrades(callback) {
+        $.ajax({
+            url: "/DemoWallet/GetTrades",
+            method: "GET",
+            dataType: "json",
+            data: {},
+            success: function (result) {
+                if (result.IsSuccess) {
+                    $.each(result.Trades, function (i, trade) {
+                        $('#tblTradesBody').append($('<tr>')
+                            .append($('<td>')
+                                .append(trade.DateStr))
+                            .append($('<td>')
+                                .append(trade.Symbol))
+                            .append($('<td>')
+                                .append(trade.Amount))
+                            .append($('<td>')
+                                .append(trade.PriceStr))
+                            .append($('<td>')
+                                .append(trade.TotalStr)));
+                    });
+                }
+
+                if (callback)
+                    callback();
+            },
+            error: function () {
+
+            },
+            timeout: 50000
+        });
+    }
 
     function getSelectedCoinNames() {
         var selectedCoinNames = [];
@@ -303,7 +362,7 @@
         });
     }
 
-    const updateInterval = @ViewBag.UpdateInterval;
+    const updateInterval = @ViewBag.UpdateInterval * 1000;
     var updatingUI = false;
 
     function updateUI(recurse) {
@@ -314,16 +373,18 @@
         updatingUI = true;
         GetBalances(function () {
             GetCoins(function () {
-                updatingUI = false;
-                if (recurse)
-                    setTimeout(updateUI, updateInterval * 1000, true);
+                GetTrades(function () {
+                    updatingUI = false;
+                    if (recurse)
+                        setTimeout(updateUI, updateInterval, true);
+                });
             });
         });
     }
 
     $(function () {
         GetPrices(function () {
-            updateUI(true)
+            updateUI(true);
         });
     });
 

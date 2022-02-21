@@ -15,6 +15,7 @@ public class DemoWalletController : Controller
     private readonly IBinanceClient _binanceClient;
     private readonly IBalanceService _balanceService;
     private readonly IDemoWalletService _demoWalletService;
+    private readonly ITradeService _tradeService;
     private readonly Settings _settings;
 
     public DemoWalletController(
@@ -22,13 +23,15 @@ public class DemoWalletController : Controller
         IBinanceClient binanceClient,
         IBalanceService balanceService,
         IDemoWalletService demoWalletService,
-        Settings settings)
+        Settings settings,
+        ITradeService tradeService)
     {
         _logger = logger;
         _binanceClient = binanceClient;
         _balanceService = balanceService;
         _demoWalletService = demoWalletService;
         _settings = settings;
+        _tradeService = tradeService;
     }
 
     public IActionResult Index()
@@ -36,6 +39,42 @@ public class DemoWalletController : Controller
         var model = new DemoWalletIndexViewModel();
         ViewBag.UpdateInterval = _settings.scheduledTaskInterval;
         return View(model);
+    }
+
+    public IActionResult GetTrades()
+    {
+        var response = new TradesViewModel();
+
+        try
+        {
+            var username = User.Identity?.Name ?? "";
+            var wallet = _demoWalletService.GetOrCreate(username);
+            if (wallet == null)
+            {
+                throw new ArgumentNullException("There is no wallet for this user");
+            }
+
+            var trades = _tradeService.TradesOfDemoWallet(wallet.Id);
+            response.Trades = trades?.Select(x => new TradeViewModel
+            {
+                Date = x.Date,
+                Symbol = x.Symbol,
+                Amount = x.Amount,
+                Price = x.USDTRate,
+                Total = x.AmountInUSDT
+            }).ToList();
+            response.IsSuccess = true;
+        }
+        catch (Exception ex)
+        {
+            response.Error = new ErrorViewModel
+            {
+                ErrorCode = "GetTrades",
+                Message = ex.Message
+            };
+        }
+
+        return Json(response);
     }
 
     [HttpPost]
