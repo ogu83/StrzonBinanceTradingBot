@@ -8,4 +8,5 @@ public interface IDemoWalletService
     DemoWalletEntity? UpdateUsdtBalance(int id, decimal usdtBalance);
     DemoWalletEntity? Get(int id);
     DemoWalletEntity? GetOrCreate(string userName);
+    public decimal GetTotalCoinBalanceInUSDT(int id);
 }

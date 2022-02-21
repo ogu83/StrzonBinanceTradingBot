@@ -10,7 +10,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString), ServiceLifetime.Scoped);
+builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString), ServiceLifetime.Singleton);
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
@@ -29,12 +29,12 @@ var settings = new Settings
 };
 builder.Services.AddSingleton<Settings>(settings);
 
-builder.Services.AddScoped<IBinanceClient, BinanceClient>();
-builder.Services.AddScoped<IAES>(x => ActivatorUtilities.CreateInstance<AES>(x, settings.aesKey));
-builder.Services.AddScoped<IBinanceCredentialService, BinanceCredentialService>();
-builder.Services.AddScoped<IDemoWalletService, DemoWalletService>();
-builder.Services.AddScoped<IBalanceService, BalanceService>();
-builder.Services.AddScoped<ITradeService, TradeService>();
+builder.Services.AddTransient<IBinanceClient, BinanceClient>();
+builder.Services.AddTransient<IAES>(x => ActivatorUtilities.CreateInstance<AES>(x, settings.aesKey));
+builder.Services.AddTransient<IBinanceCredentialService, BinanceCredentialService>();
+builder.Services.AddTransient<IDemoWalletService, DemoWalletService>();
+builder.Services.AddTransient<IBalanceService, BalanceService>();
+builder.Services.AddTransient<ITradeService, TradeService>();
 
 builder.Services.AddHostedService<ConsumeScopedServiceHostedService>();
 builder.Services.AddScoped<IScopedProcessingService, ScopedProcessingService>();

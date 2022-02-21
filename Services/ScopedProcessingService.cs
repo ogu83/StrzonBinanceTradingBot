@@ -7,17 +7,20 @@ public class ScopedProcessingService : IScopedProcessingService
     private int executionCount = 0;
     private readonly ILogger<ScopedProcessingService> _logger;
     private readonly ITradeService _tradeService;
+    private readonly IBalanceService _balanceService;
     private readonly Settings _settings;
     private const int s2ms = 1000;
 
     public ScopedProcessingService(
         ILogger<ScopedProcessingService> logger,
         ITradeService tradeService,
-        Settings settings)
+        Settings settings, 
+        IBalanceService balanceService)
     {
         _logger = logger;
         _tradeService = tradeService;
         _settings = settings;
+        _balanceService = balanceService;
     }
 
     public async Task DoWork(CancellationToken stoppingToken)
@@ -30,6 +33,7 @@ public class ScopedProcessingService : IScopedProcessingService
 
             try
             {
+                await _balanceService.UpdateBalanceUSDTRates(true);
                 await _tradeService.CheckLockedDemoProfits();
             }
             catch (Exception ex)

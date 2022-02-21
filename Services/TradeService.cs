@@ -139,7 +139,7 @@ public class TradeService : ITradeService
             USDTRate = rate
         };
 
-        using (var scope = new TransactionScope())
+        //using (var scope = new TransactionScope())
         {
             var wallet = _demoWalletService.Get(walletId);
             if (wallet == null)
@@ -175,7 +175,7 @@ public class TradeService : ITradeService
                 _balanceService.Update(entity.Symbol, walletId, userName, entity.USDTRate, balance.Amount - entity.Amount, BalanceHistoryEntity.Action.Trade);
             }
 
-            scope.Complete();
+            //scope.Complete();
 
             _logger.LogInformation($"{entity.ToString()} executed.");
         }

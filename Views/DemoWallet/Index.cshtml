@@ -3,35 +3,251 @@
 }
 
 <h2>Demo Wallet</h2>
-<p>This is a demo wallet, none of those transactions and balances are real. No real account is effected. This is a simulation of Lock Profit.</p>
-<h4><span class="text-muted">Available USDT Balance: </span><span id="txtBalance"></span></h3>
-<h4><span class="text-muted">Total USDT Balance: </span><span id="txtTotalBalance"></span></h3>
+<p>This is a demo wallet, none of those transactions and balances are real. No real account is effected. This is a
+    simulation of Lock Profit.</p>
+
+<div class="card">
+    <div class="card-header">
+        USDT Balance
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <h4><span class="text-muted">Available: </span><span id="txtBalance"></span></h4>
+                <h4><span class="text-muted">Total: </span><span id="txtTotalBalance"></span></h4>
+            </div>
+            <div class="col">
+                <div class="input-group mb-3">
+                    <input type="number" class="form-control" id="txtUpdatedBalance" placeholder="New USDT balance"
+                        aria-describedby="btnUpdateBalance" aria-valuemax="1000000000" aria-valuemin="10" min="10"
+                        max="1000000000">
+                    <button id="btnUpdateBalance" type="button" class="btn btn-outline-secondary"
+                        onclick="UpdateBalance();">Update</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        List Of Coins
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col">
+                <div class="input-group mb-3">
+                    <select id="dd_pairs" class="form-select" aria-label="Select a coin to add your wallet"
+                        aria-describedby="buttonAddBalanceToWallet" onchange="updatePairTotal();">
+                        <option selected>Select a coin to add</option>
+                    </select>
+                    <input id="txt_pair_amount" type="number" min="0.00000001" max="1000000000" placeholder="Amount"
+                        onkeyup="updatePairTotal();" onchange="updatePairTotal();" />
+                    <span id="txt_pair_total" class="input-group-text">Total: </span>
+                    <button id=buttonAddBalanceToWallettype="button" class="btn btn-outline-secondary"
+                        onclick="AddCoinToWallet();">Set</button>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <table class="table table-striped">
+                    <thread>
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Coin</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Coin Price</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Status</th>
+                        </tr>
+                    </thread>
+                    <tbody id="tblBody">
+
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
-    <script>
+<script>
 
-        function GetBalances() {
-            $.ajax({
-                url: "/DemoWallet/GetBalances",
-                method: "POST",
-                dataType: "json",
-                data: {},
-                success: function(result) {
-                    if (result.IsSuccess)
-                    {
-                        $("#txtBalance").html(result.USDTBalanceStr);
-                        $("#txtTotalBalance").html(result.TotalBalanceInUSDTStr);
-                    }
-                },
-                error: function() {
+    function updatePairTotal() {
+        var price = $('#dd_pairs option:selected').data('Price');
+        if (!price || price <= 0)
+            return;
 
-                },
-                timeout: 50000
-            });
+        var amount = $("#txt_pair_amount").val();
+        if (!amount || amount <= 0)
+            return;
+
+        var total = amount * price;
+        total = Math.round(total * 100) * 0.01;
+        total = formatToCurrency(total);
+        $("#txt_pair_total").html(`Total: ${total}`);
+    }
+
+    function AddCoinToWallet() {
+        var value = $("#dd_pairs").val();
+        if (!value)
+            return;
+
+        var amount = $("#txt_pair_amount").val();
+        if (!amount || amount <= 0)
+            return;
+
+        $.ajax({
+            url: "/DemoWallet/AddCoinToWallet",
+            method: "POST",
+            dataType: "json",
+            data: {
+                symbol: value,
+                amount: amount
+            },
+            success: function (result) {
+                if (result.IsSuccess) {
+                    updateUI();
+                }
+            },
+            error: function () {
+
+            },
+            timeout: 50000
+        });
+    }
+
+    function GetCoins() {
+        $.ajax({
+            url: "/DemoWallet/GetCoins",
+            method: "GET",
+            dataType: "json",
+            data: {},
+            success: function (result) {
+                if (result.IsSuccess) {
+                    $.each(result.Coins, function (i, coin) {
+                        if (!$(`#td_${coin.Coin}`).length) {
+                            //debugger;
+                            $('#tblBody').append($('<tr>')
+                                .append($('<td>')
+                                    .append($('<input>', { type: "checkbox", id: `chk_${coin.Coin}`, class: 'form-check-input' })))
+                                .append($('<td>', { id: `td_${coin.Coin}` })
+                                    .append(coin.Coin))
+                                .append($('<td>', { id: `td_${coin.Coin}_Amount` })
+                                    .append(coin.AmountStr))
+                                .append($('<td>', { id: `td_${coin.Coin}_Price` })
+                                    .append(coin.PriceStr))
+                                .append($('<td>', { id: `td_${coin.Coin}_Total` })
+                                    .append(coin.TotalStr))
+                                .append($('<td>')
+                                    .append($('<span>', { id: `td_${coin.Coin}_IsLocked`, class: "badge rounded-pill bg-danger" })
+                                        .append(coin.IsLocked ? 'Locked' : ''))));
+                        }
+                        else {
+                            //debugger;
+                            $(`#td_${coin.Coin}_Amount`).html(coin.AmountStr);
+                            $(`#td_${coin.Coin}_Price`).html(coin.PriceStr);
+                            $(`#td_${coin.Coin}_Total`).html(coin.TotalStr);
+                            $(`#td_${coin.Coin}_IsLocked`).html(coin.IsLocked ? 'Locked' : '');
+                        }
+                    });
+                }
+            },
+            error: function () {
+
+            },
+            timeout: 50000
+        });
+    }
+
+    function GetPrices() {
+        $.ajax({
+            url: "/DemoWallet/GetPrices",
+            method: "GET",
+            dataType: "json",
+            data: {},
+            success: function (result) {
+                if (result.IsSuccess) {
+                    $.each(result.Prices, function (i, item) {
+                        $('#dd_pairs').append($('<option>', {
+                            value: item.Value,
+                            text: item.Text,
+                            data: item
+                        }));
+                    });
+                }
+            },
+            error: function () {
+
+            },
+            timeout: 50000
+        });
+    }
+
+    function UpdateBalance() {
+        var balance = $("#txtUpdatedBalance").val();
+        balance = parseFloat(balance);
+
+        if (balance > 1000000000) {
+            balance = 1000000000;
+            $("#txtUpdatedBalance").val(balance);
+        }
+        else if (balance < 10) {
+            balance = 10;
+            $("#txtUpdatedBalance").val(balance);
         }
 
-        $(function() {
-            GetBalances();
+        $.ajax({
+            url: "/DemoWallet/UpdateBalance",
+            method: "POST",
+            dataType: "json",
+            data: { balance: balance },
+            success: function (result) {
+                if (result.IsSuccess) {
+                    GetBalances();
+                }
+            },
+            error: function () {
+
+            },
+            timeout: 50000
         });
-    </script>
+    }
+
+    function GetBalances() {
+        $.ajax({
+            url: "/DemoWallet/GetBalances",
+            method: "GET",
+            dataType: "json",
+            data: {},
+            success: function (result) {
+                if (result.IsSuccess) {
+                    $("#txtBalance").html(result.USDTBalanceStr);
+                    $("#txtTotalBalance").html(result.TotalBalanceInUSDTStr);
+                }
+            },
+            error: function () {
+
+            },
+            timeout: 50000
+        });
+    }
+
+    const updateInterval = @ViewBag.UpdateInterval;
+
+    function updateUI(recurse) {
+        GetBalances();
+        GetCoins();
+        
+        if (recurse)
+            setTimeout(updateUI, updateInterval * 1000, true);
+    }
+
+    $(function () {
+        GetPrices();
+        updateUI(true);
+    });
+
+</script>
 }

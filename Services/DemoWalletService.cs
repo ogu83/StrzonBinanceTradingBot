@@ -24,7 +24,7 @@ public class DemoWalletService : IDemoWalletService
             USDTBalance = usdtBalance
         };
         _context.DemoWallets?.Add(wallet);
-        _context.SaveChanges();
+        var count = _context.SaveChanges();
         return wallet;
     }
 
@@ -56,5 +56,11 @@ public class DemoWalletService : IDemoWalletService
             _context.SaveChanges();
         }
         return wallet;
+    }
+
+    public decimal GetTotalCoinBalanceInUSDT(int id)
+    {
+        var retval = _context.Balances?.Where(x => x.DemoWallet_ID == id).Sum(x => (double)x.USDTRate * (double)x.Amount);
+        return (decimal)(retval ?? 0d);
     }
 }

@@ -13,4 +13,6 @@ public interface IBalanceService
     BalanceEntity? Lock(string symbol, int walletId, string userName);
     BalanceEntity? Unlock(string symbol, int walletId, string userName);
     List<BalanceEntity>? GetLockedBalances(bool onlyDemoWallets);
+    List<BalanceEntity>? GetBalances(bool onlyDemoWallets);
+    Task UpdateBalanceUSDTRates(bool onlyDemoWallets);
 }
