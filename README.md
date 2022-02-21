@@ -46,3 +46,5 @@ dotnet restore
 dotnet build
 dotnet run
 ```
+
+Goto https://localhost:7231/ .

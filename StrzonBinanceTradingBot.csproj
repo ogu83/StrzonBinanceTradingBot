@@ -20,6 +20,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.1" />
     <PackageReference Include="Binance.Net" Version="7.2.5" />
     <PackageReference Include="LinqKit.Core" Version="1.1.26" />
+    <PackageReference Include="NLog.Web.AspNetCore" Version="4.*" />  
+    <PackageReference Include="NLog" Version="4.*" />
     <PackageReference Include="System.Linq.Dynamic.Core" Version="1.2.13" />
   </ItemGroup>
 
