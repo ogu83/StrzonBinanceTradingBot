@@ -90,6 +90,51 @@ public class BalanceService : IBalanceService
         return retval;
     }
 
+    public List<BalanceEntity>? Lock(string[] symbol, int walletId, string userName)
+    {
+        var balances = _context.Balances?
+                               .Where(x => x.DemoWallet_ID == walletId
+                                        && x.IdentityUserName == userName
+                                        && symbol.Contains(x.Symbol)
+                                        && !x.IsLocked)
+                               .ToList();
+        if (balances != null && balances.Any())
+        {
+            foreach (var entity in balances)
+            {
+                entity.LockAmount = entity.Amount;
+                entity.LockUSDTRate = entity.USDTRate;
+                entity.LockDate = DateTime.UtcNow;
+                entity.IsLocked = true;
+                _context.Update(entity);
+            }
+            _context.SaveChanges();
+        }
+
+        return balances;
+    }
+
+    public List<BalanceEntity>? Unlock(string[] symbol, int walletId, string userName)
+    {
+        var balances = _context.Balances?
+                               .Where(x => x.DemoWallet_ID == walletId
+                                        && x.IdentityUserName == userName
+                                        && symbol.Contains(x.Symbol)
+                                        && x.IsLocked)
+                               .ToList();
+        if (balances != null && balances.Any())
+        {
+            foreach (var entity in balances)
+            {
+                entity.IsLocked = false;
+                _context.Update(entity);
+            }
+            _context.SaveChanges();
+        }
+
+        return balances;
+    }
+
     public BalanceEntity? Lock(string symbol, int walletId, string userName)
     {
         var entity = Get(symbol, walletId, userName);
@@ -181,7 +226,7 @@ public class BalanceService : IBalanceService
     {
         _logger.LogInformation("Updating Balance USDT Rates via Binance");
         var changes = 0;
-        var updatedDemowalletIds = new Dictionary<int,string>();
+        var updatedDemowalletIds = new Dictionary<int, string>();
         //using (var scope = new TransactionScope())
         {
             var balances = GetBalances(onlyDemoWallets);

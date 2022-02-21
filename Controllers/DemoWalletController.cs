@@ -21,7 +21,7 @@ public class DemoWalletController : Controller
         ILogger<DemoWalletController> logger,
         IBinanceClient binanceClient,
         IBalanceService balanceService,
-        IDemoWalletService demoWalletService, 
+        IDemoWalletService demoWalletService,
         Settings settings)
     {
         _logger = logger;
@@ -36,6 +36,74 @@ public class DemoWalletController : Controller
         var model = new DemoWalletIndexViewModel();
         ViewBag.UpdateInterval = _settings.scheduledTaskInterval;
         return View(model);
+    }
+
+    [HttpPost]
+    public IActionResult StopLockInProfits(string[] symbols)
+    {
+        var response = new ResponseViewModel();
+
+        if (symbols == null || symbols.Length <= 0)
+        {
+            return Json(response);
+        }
+
+        try
+        {
+            var username = User.Identity?.Name ?? "";
+            var wallet = _demoWalletService.GetOrCreate(username);
+            if (wallet == null)
+            {
+                throw new ArgumentNullException("There is no wallet for this user");
+            }
+
+            _balanceService.Unlock(symbols, wallet.Id, username);
+            response.IsSuccess = true;
+        }
+        catch (Exception ex)
+        {
+            response.Error = new ErrorViewModel
+            {
+                ErrorCode = "StopLockInProfits",
+                Message = ex.Message
+            };
+        }
+
+        return Json(response);
+    }
+
+    [HttpPost]
+    public IActionResult LockInProfits(string[] symbols)
+    {
+        var response = new ResponseViewModel();
+
+        if (symbols == null || symbols.Length <= 0)
+        {
+            return Json(response);
+        }
+
+        try
+        {
+            var username = User.Identity?.Name ?? "";
+            var wallet = _demoWalletService.GetOrCreate(username);
+            if (wallet == null)
+            {
+                throw new ArgumentNullException("There is no wallet for this user");
+            }
+
+            _balanceService.Lock(symbols, wallet.Id, username);
+            response.IsSuccess = true;
+        }
+        catch (Exception ex)
+        {
+            response.Error = new ErrorViewModel
+            {
+                ErrorCode = "LockInProfits",
+                Message = ex.Message
+            };
+        }
+
+        return Json(response);
     }
 
     [HttpPost]
@@ -83,7 +151,7 @@ public class DemoWalletController : Controller
         {
             response.Error = new ErrorViewModel
             {
-                ErrorCode = "Update Balance",
+                ErrorCode = "AddCoinToWallet",
                 Message = ex.Message
             };
         }
@@ -144,7 +212,7 @@ public class DemoWalletController : Controller
         }
         else
         {
-            _logger.LogError("UpdateBalance Error");
+            _logger.LogError("GetPrices");
             response.Error = new ErrorViewModel
             {
                 ErrorCode = pricesResponse.Error?.Code.ToString(),
@@ -174,7 +242,7 @@ public class DemoWalletController : Controller
             _logger.LogError(ex, "UpdateBalance Error");
             response.Error = new ErrorViewModel
             {
-                ErrorCode = "Update Balance",
+                ErrorCode = "GetBalances",
                 Message = ex.Message
             };
         }
@@ -201,7 +269,7 @@ public class DemoWalletController : Controller
             _logger.LogError(ex, "UpdateBalance Error");
             response.Error = new ErrorViewModel
             {
-                ErrorCode = "Update Balance",
+                ErrorCode = "UpdateBalance",
                 Message = ex.Message
             };
         }

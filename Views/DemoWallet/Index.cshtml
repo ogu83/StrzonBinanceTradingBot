@@ -41,7 +41,7 @@
                         aria-describedby="buttonAddBalanceToWallet" onchange="updatePairTotal();">
                         <option selected>Select a coin to add</option>
                     </select>
-                    <input id="txt_pair_amount" type="number" min="0.00000001" max="1000000000" placeholder="Amount"
+                    <input id="txt_pair_amount" type="number" min="0" max="1000000000" placeholder="Amount"
                         onkeyup="updatePairTotal();" onchange="updatePairTotal();" />
                     <span id="txt_pair_total" class="input-group-text">Total: </span>
                     <button id=buttonAddBalanceToWallettype="button" class="btn btn-outline-secondary"
@@ -68,11 +68,72 @@
                 </table>
             </div>
         </div>
+        <div class="row">
+            <div class="col">
+                <div class="btn-group">
+                    <button class="btn btn-success" onclick="LockInProfits();">Lock In Profits</button>
+                    <button class="btn btn-danger" onclick="StopLockInProfits();">Stop</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
 <script>
+
+    function getSelectedCoinNames() {
+        var selectedCoinNames = [];
+        for (var c in coinNames) {
+            if ($(`#chk_${coinNames[c]}`).prop("checked")) {
+                selectedCoinNames.push(coinNames[c]);
+            }
+        }
+        console.log("Selected Coin Names : " + selectedCoinNames);
+        return selectedCoinNames;
+    }
+
+    function StopLockInProfits() {
+        var coins = getSelectedCoinNames();
+        $.ajax({
+            url: "/DemoWallet/StopLockInProfits",
+            method: "POST",
+            dataType: "json",
+            data: {
+                symbols: coins
+            },
+            success: function (result) {
+                if (result.IsSuccess) {
+                    updateUI();
+                }
+            },
+            error: function () {
+
+            },
+            timeout: 50000
+        });
+    }
+
+    function LockInProfits() {
+        var coins = getSelectedCoinNames();
+        $.ajax({
+            url: "/DemoWallet/LockInProfits",
+            method: "POST",
+            dataType: "json",
+            data: {
+                symbols: coins
+            },
+            success: function (result) {
+                if (result.IsSuccess) {
+                    updateUI();
+                }
+            },
+            error: function () {
+
+            },
+            timeout: 50000
+        });
+    }
 
     function updatePairTotal() {
         var price = $('#dd_pairs option:selected').data('Price');
@@ -118,7 +179,8 @@
         });
     }
 
-    function GetCoins() {
+    var coinNames = [];
+    function GetCoins(callback) {
         $.ajax({
             url: "/DemoWallet/GetCoins",
             method: "GET",
@@ -128,6 +190,7 @@
                 if (result.IsSuccess) {
                     $.each(result.Coins, function (i, coin) {
                         if (!$(`#td_${coin.Coin}`).length) {
+                            coinNames.push(coin.Coin);
                             //debugger;
                             $('#tblBody').append($('<tr>')
                                 .append($('<td>')
@@ -153,6 +216,8 @@
                         }
                     });
                 }
+                if (callback)
+                    callback();
             },
             error: function () {
 
@@ -161,7 +226,7 @@
         });
     }
 
-    function GetPrices() {
+    function GetPrices(callback) {
         $.ajax({
             url: "/DemoWallet/GetPrices",
             method: "GET",
@@ -175,6 +240,8 @@
                             text: item.Text,
                             data: item
                         }));
+                        if (callback)
+                            callback();
                     });
                 }
             },
@@ -215,7 +282,7 @@
         });
     }
 
-    function GetBalances() {
+    function GetBalances(callback) {
         $.ajax({
             url: "/DemoWallet/GetBalances",
             method: "GET",
@@ -225,6 +292,8 @@
                 if (result.IsSuccess) {
                     $("#txtBalance").html(result.USDTBalanceStr);
                     $("#txtTotalBalance").html(result.TotalBalanceInUSDTStr);
+                    if (callback)
+                        callback();
                 }
             },
             error: function () {
@@ -235,18 +304,27 @@
     }
 
     const updateInterval = @ViewBag.UpdateInterval;
+    var updatingUI = false;
 
     function updateUI(recurse) {
-        GetBalances();
-        GetCoins();
-        
-        if (recurse)
-            setTimeout(updateUI, updateInterval * 1000, true);
+        if (updatingUI) {
+            return;
+        }
+
+        updatingUI = true;
+        GetBalances(function () {
+            GetCoins(function () {
+                updatingUI = false;
+                if (recurse)
+                    setTimeout(updateUI, updateInterval * 1000, true);
+            });
+        });
     }
 
     $(function () {
-        GetPrices();
-        updateUI(true);
+        GetPrices(function () {
+            updateUI(true)
+        });
     });
 
 </script>
