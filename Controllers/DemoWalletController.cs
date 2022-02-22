@@ -61,7 +61,8 @@ public class DemoWalletController : Controller
                 Symbol = x.Symbol,
                 Amount = x.Amount,
                 Price = x.USDTRate,
-                Total = x.AmountInUSDT
+                Total = x.AmountInUSDT,
+                Type = Enum.GetName(x.Type.GetType(), x.Type)
             }).ToList();
             response.IsSuccess = true;
         }

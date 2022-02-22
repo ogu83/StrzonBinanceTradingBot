@@ -5,7 +5,7 @@ namespace StrzonBinanceTradingBot.Models;
 public class TradeViewModel
 {
     public DateTime Date { get; set; }
-    public string DateStr { get { return  Date.ToLocalTime().ToString(); }}
+    public string DateStr { get { return Date.ToLocalTime().ToString(); } }
 
     public string? Symbol { get; set; }
     public decimal Amount { get; set; }
@@ -15,5 +15,7 @@ public class TradeViewModel
 
     public decimal Total { get; set; }
     public string TotalStr { get { return Total.ToString("c", new CultureInfo("en-US")); } }
+
+    public string? Type { get; set; }
 
 }

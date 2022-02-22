@@ -90,6 +90,7 @@
                     <thread>
                         <tr>
                             <th scope="col">Date</th>
+                            <th scope="col">Type</th>
                             <th scope="col">Symbol</th>
                             <th scope="col">Amount</th>
                             <th scope="col">Price</th>
@@ -120,6 +121,8 @@
                         $('#tblTradesBody').append($('<tr>')
                             .append($('<td>')
                                 .append(trade.DateStr))
+                            .append($('<td>')
+                                .append(trade.Type))
                             .append($('<td>')
                                 .append(trade.Symbol))
                             .append($('<td>')

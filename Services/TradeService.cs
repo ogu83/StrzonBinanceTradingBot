@@ -58,7 +58,7 @@ public class TradeService : ITradeService
             _logger.LogInformation($"Price of {balance.Symbol} is {price.Price} at {price.Timestamp?.ToLocalTime().ToString()}");
             _logger.LogInformation($"Price of {balance.Symbol} is {balance.LockUSDTRate} at {balance.LockDate.ToLocalTime().ToString()}");
 
-            if (price.Price < (1 - _settings.maxAllowedSlipage) * balance.USDTRate)
+            if (price.Price < (1 - _settings.maxAllowedSlipage) * balance.LockUSDTRate)
             {
                 _logger.LogInformation($"Current price is LOWER than locked price for {balance.Symbol}, SELL it");
 
@@ -70,7 +70,7 @@ public class TradeService : ITradeService
                     price.Price,
                     TradeEntity.TradeType.Sell);
             }
-            else if (price.Price > (1 + _settings.maxAllowedSlipage) * balance.USDTRate)
+            else if (price.Price > (1 + _settings.maxAllowedSlipage) * balance.LockUSDTRate)
             {
                 _logger.LogInformation($"Current price is HIGHER than locket price for {balance.Symbol}, BUY it");
 
