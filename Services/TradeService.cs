@@ -139,47 +139,52 @@ public class TradeService : ITradeService
             USDTRate = rate
         };
 
-        //using (var scope = new TransactionScope())
+
+        var wallet = _demoWalletService.Get(walletId);
+        if (wallet == null)
         {
-            var wallet = _demoWalletService.Get(walletId);
-            if (wallet == null)
-            {
-                throw new ArgumentNullException($"There is no such wallet {walletId}");
-            }
-
-            var balance = _balanceService.Get(entity.Symbol, walletId, userName);
-            if (balance == null)
-            {
-                throw new ArgumentNullException($"No such balance {entity.Symbol} in this wallet {walletId}");
-            }
-
-            _context.Trades?.Add(entity);
-            _context.SaveChanges();
-
-            if (entity.Type == TradeEntity.TradeType.Buy)
-            {
-                if (entity.AmountInUSDT > wallet.USDTBalance)
-                {
-                    throw new ArgumentOutOfRangeException("There not enough USDT to buy!");
-                }
-                wallet.USDTBalance -= entity.AmountInUSDT;
-                _demoWalletService.UpdateUsdtBalance(wallet.Id, wallet.USDTBalance);
-
-                _balanceService.Update(entity.Symbol, walletId, userName, entity.USDTRate, balance.Amount + entity.Amount, BalanceHistoryEntity.Action.Trade);
-            }
-            else if (entity.Type == TradeEntity.TradeType.Sell)
-            {
-                wallet.USDTBalance += entity.AmountInUSDT;
-                _demoWalletService.UpdateUsdtBalance(wallet.Id, wallet.USDTBalance);
-
-                _balanceService.Update(entity.Symbol, walletId, userName, entity.USDTRate, balance.Amount - entity.Amount, BalanceHistoryEntity.Action.Trade);
-            }
-
-            //scope.Complete();
-
-            _logger.LogInformation($"{entity.ToString()} executed.");
+            throw new ArgumentNullException($"There is no such wallet {walletId}");
         }
 
+        var balance = _balanceService.Get(entity.Symbol, walletId, userName);
+        if (balance == null)
+        {
+            throw new ArgumentNullException($"No such balance {entity.Symbol} in this wallet {walletId}");
+        }
+
+        if (entity.Type == TradeEntity.TradeType.Buy)
+        {
+            if (entity.AmountInUSDT > wallet.USDTBalance)
+            {
+                _logger.LogError("There not enough USDT to buy!");
+            }
+            else
+            {
+                _context.Trades?.Add(entity);
+                _context.SaveChanges();
+                wallet.USDTBalance -= entity.AmountInUSDT;
+                _demoWalletService.UpdateUsdtBalance(wallet.Id, wallet.USDTBalance);
+                _balanceService.Update(entity.Symbol, walletId, userName, entity.USDTRate, balance.Amount + entity.Amount, BalanceHistoryEntity.Action.Trade);
+                _logger.LogInformation($"{entity.ToString()} executed.");
+            }
+        }
+        else if (entity.Type == TradeEntity.TradeType.Sell)
+        {
+            if (entity.Amount > 0)
+            {
+                _context.Trades?.Add(entity);
+                _context.SaveChanges();
+                wallet.USDTBalance += entity.AmountInUSDT;
+                _demoWalletService.UpdateUsdtBalance(wallet.Id, wallet.USDTBalance);
+                _balanceService.Update(entity.Symbol, walletId, userName, entity.USDTRate, balance.Amount - entity.Amount, BalanceHistoryEntity.Action.Trade);
+                _logger.LogInformation($"{entity.ToString()} executed.");
+            }
+            else
+            {
+                _logger.LogError($"There not enough {entity.Symbol} to sell!");
+            }
+        }
+        
         return entity;
     }
 
