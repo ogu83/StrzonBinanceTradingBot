@@ -58,7 +58,7 @@ public class TradeService : ITradeService
             _logger.LogInformation($"Price of {balance.Symbol} is {price.Price} at {price.Timestamp?.ToLocalTime().ToString()}");
             _logger.LogInformation($"Price of {balance.Symbol} is {balance.LockUSDTRate} at {balance.LockDate.ToLocalTime().ToString()}");
 
-            if (price.Price < (1 - _settings.maxAllowedSlipage) * balance.LockUSDTRate)
+            if (price.Price < (1 - _settings.maxAllowedSlipage) * balance.LockUSDTRate && balance.Amount > 0)
             {
                 _logger.LogInformation($"Current price is LOWER than locked price for {balance.Symbol}, SELL it");
 
@@ -70,7 +70,7 @@ public class TradeService : ITradeService
                     price.Price,
                     TradeEntity.TradeType.Sell);
             }
-            else if (price.Price > (1 + _settings.maxAllowedSlipage) * balance.LockUSDTRate)
+            else if (price.Price > (1 + _settings.maxAllowedSlipage) * balance.LockUSDTRate && balance.Amount <= 0)
             {
                 _logger.LogInformation($"Current price is HIGHER than locket price for {balance.Symbol}, BUY it");
 
@@ -115,7 +115,7 @@ public class TradeService : ITradeService
             }
             else
             {
-                _logger.LogInformation($"Nothing to BUY OR SELL. Price is between allowed slipage {_settings.maxAllowedSlipage.ToString("P")}");
+                _logger.LogInformation($"Nothing to BUY OR SELL. There is already traded or price is between allowed slipage {_settings.maxAllowedSlipage.ToString("P")}");
             }
         }
     }
