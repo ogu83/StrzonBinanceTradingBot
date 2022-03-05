@@ -5,7 +5,7 @@ Interface:
 1.	At the end of this contract the website should have a legit design compatible with both android and IOS - OK
 2.	The page layout should be properly presented. - OK
 3.	The portfolio graph performance should be displayed - INPROGRESS
-4.	A checkbox to select all coins in the wallet once for all and lock it should be introduced -INPROGRESS
+4.	A checkbox to select all coins in the wallet once for all and lock it should be introduced -DONE
 5.	The dropdown in demo wallet should not display the prices between brackets -INPROGRESS
 6.	In the wallet tabulated format, the locked price should have a column in the table. -INPROGRESS
 7.	Exchange fees should be displayed above the table. -INPROGRESS

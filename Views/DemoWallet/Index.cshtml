@@ -54,7 +54,7 @@
                 <table class="table table-striped">
                     <thread>
                         <tr>
-                            <th scope="col">#</th>
+                            <th scope="col"><input id="chk_All" type="checkbox" class="form-check-input" /></th>
                             <th scope="col">Coin</th>
                             <th scope="col">Amount</th>
                             <th scope="col">Coin Price</th>
@@ -257,7 +257,7 @@
                             //debugger;
                             $('#tblBody').append($('<tr>')
                                 .append($('<td>')
-                                    .append($('<input>', { type: "checkbox", id: `chk_${coin.Coin}`, class: 'form-check-input' })))
+                                    .append($('<input>', { type: "checkbox", id: `chk_${coin.Coin}`, class: 'form-check-input chk-coin' })))
                                 .append($('<td>', { id: `td_${coin.Coin}` })
                                     .append(coin.Coin))
                                 .append($('<td>', { id: `td_${coin.Coin}_Amount` })
@@ -389,6 +389,13 @@
     $(function () {
         GetPrices(function () {
             updateUI(true);
+        });
+
+        $('#chk_All').change(function () {
+            if (this.checked)
+                $(".chk-coin").prop("checked", true);
+            else 
+                $(".chk-coin").prop("checked", false);
         });
     });
 
