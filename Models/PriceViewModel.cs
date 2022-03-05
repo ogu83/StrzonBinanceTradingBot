@@ -11,5 +11,5 @@ public class PriceViewModel
 
     public string? Value { get { return Symbol?.Replace("USDT", ""); } }
 
-    public string? Text { get { return $"{Value} - {PriceStr} USDT"; } }
+    public string? Text { get { return $"{Value}"; } }
 }
