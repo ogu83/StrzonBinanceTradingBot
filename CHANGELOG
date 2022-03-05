@@ -1,0 +1,20 @@
+BUGS:
+
+Interface:
+
+1.	At the end of this contract the website should have a legit design compatible with both android and IOS - OK
+2.	The page layout should be properly presented. - OK
+3.	The portfolio graph performance should be displayed - INPROGRESS
+4.	A checkbox to select all coins in the wallet once for all and lock it should be introduced -INPROGRESS
+5.	The dropdown in demo wallet should not display the prices between brackets -INPROGRESS
+6.	In the wallet tabulated format, the locked price should have a column in the table. -INPROGRESS
+7.	Exchange fees should be displayed above the table. -INPROGRESS
+8.	At the header it should not display the email or Hello, it can be only “Profile” button -INPROGRESS
+9.	The name of the website should be pixfolio  -INPROGRESS
+
+Functioning:
+1.	A wrong email format can be registered such as oguz@hotmail, this should be detected. -INPROGRESS
+2.	An email service should be introduced for email verification and forgetting the password (can you please suggest some viable solutions you know?) -INPROGRESS (Send Grid Will be used.)
+3.	Why it’s mandatory to have USDT in the demo wallet? If we put 0 USDT it take by default 10 USDT -INPROGRESS
+4.	The bot always buys low and sell high, please refer to the excel sheet, always it buys lower by 1-1.5% of the locked price level and sell higher by 1-1.5% - it should be the opposite -INPROGRESS
+5.	Sometime when the bot re-buy it selects randomly a coin and deduct a fraction of it (check the highlighted amounts in the excel sheet). -OK
