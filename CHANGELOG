@@ -9,7 +9,7 @@ Interface:
 5.	The dropdown in demo wallet should not display the prices between brackets -DONE
 6.	In the wallet tabulated format, the locked price should have a column in the table. -DONE
 7.	Exchange fees should be displayed above the table. -INPROGRESS
-8.	At the header it should not display the email or Hello, it can be only “Profile” button -INPROGRESS
+8.	At the header it should not display the email or Hello, it can be only “Profile” button -DONE
 9.	The name of the website should be pixfolio  -DONE
 
 Functioning:
