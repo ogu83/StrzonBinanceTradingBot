@@ -13,7 +13,7 @@ Interface:
 9.	The name of the website should be pixfolio  -DONE
 
 Functioning:
-1.	A wrong email format can be registered such as oguz@hotmail, this should be detected. -INPROGRESS
+1.	A wrong email format can be registered such as oguz@hotmail, this should be detected. -DONE
 2.	An email service should be introduced for email verification and forgetting the password (can you please suggest some viable solutions you know?) -INPROGRESS (Send Grid Will be used.)
 3.	Why it’s mandatory to have USDT in the demo wallet? If we put 0 USDT it take by default 10 USDT -INPROGRESS
 4.	The bot always buys low and sell high, please refer to the excel sheet, always it buys lower by 1-1.5% of the locked price level and sell higher by 1-1.5% - it should be the opposite -INPROGRESS
