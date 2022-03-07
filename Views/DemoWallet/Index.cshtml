@@ -15,11 +15,14 @@
             <div class="col">
                 <h4><span class="text-muted">Available: </span><span id="txtBalance"></span></h4>
                 <h4><span class="text-muted">Total: </span><span id="txtTotalBalance"></span></h4>
+                <div>
+                    <button class="btn btn-danger">Reset Wallet</button>
+                </div>
             </div>
             <div class="col">
                 <div class="input-group mb-3">
                     <input type="number" class="form-control" id="txtUpdatedBalance" placeholder="New USDT balance"
-                        aria-describedby="btnUpdateBalance" aria-valuemax="1000000000" aria-valuemin="10" min="10"
+                        aria-describedby="btnUpdateBalance" aria-valuemax="1000000000" aria-valuemin="0" min="0"
                         max="1000000000">
                     <button id="btnUpdateBalance" type="button" class="btn btn-outline-secondary"
                         onclick="UpdateBalance();">Update</button>
@@ -327,8 +330,8 @@
             balance = 1000000000;
             $("#txtUpdatedBalance").val(balance);
         }
-        else if (balance < 10) {
-            balance = 10;
+        else if (balance < 0) {
+            balance = 0;
             $("#txtUpdatedBalance").val(balance);
         }
 

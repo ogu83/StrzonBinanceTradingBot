@@ -9,4 +9,5 @@ public interface IDemoWalletService
     DemoWalletEntity? Get(int id);
     DemoWalletEntity? GetOrCreate(string userName);
     public decimal GetTotalCoinBalanceInUSDT(int id);
+    public void DeleteDemoWallet(int id);
 }

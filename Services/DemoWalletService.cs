@@ -63,4 +63,14 @@ public class DemoWalletService : IDemoWalletService
         var retval = _context.Balances?.Where(x => x.DemoWallet_ID == id).Sum(x => (double)x.USDTRate * (double)x.Amount);
         return (decimal)(retval ?? 0d);
     }
+
+    public void DeleteDemoWallet(int id)
+    {
+        var wallet = _context.DemoWallets?.SingleOrDefault(x => x.Id == id);
+        if (wallet != null)
+        {
+            _context.Remove(wallet);
+            _context.SaveChanges();
+        }
+    }
 }
