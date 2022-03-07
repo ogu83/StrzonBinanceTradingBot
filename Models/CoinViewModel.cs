@@ -12,6 +12,9 @@ public class CoinViewModel
     public decimal Price { get; set; }
     public string PriceStr { get { return Price.ToString("c", new CultureInfo("en-US")); } }
 
+    public decimal LockedPrice { get; set; }
+    public string LockedPriceStr { get { return IsLocked ? LockedPrice.ToString("c", new CultureInfo("en-US")) : string.Empty; } }
+
     public decimal Total { get { return Amount * Price; } }
     public string TotalStr { get { return Total.ToString("c", new CultureInfo("en-US")); } }
 

@@ -217,6 +217,7 @@ public class DemoWalletController : Controller
                 Coin = x.Symbol,
                 Amount = x.Amount,
                 Price = x.USDTRate,
+                LockedPrice = x.LockUSDTRate,
                 IsLocked = x.IsLocked,
             }).ToList();
             response.IsSuccess = true;

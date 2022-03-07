@@ -57,7 +57,8 @@
                             <th scope="col"><input id="chk_All" type="checkbox" class="form-check-input" /></th>
                             <th scope="col">Coin</th>
                             <th scope="col">Amount</th>
-                            <th scope="col">Coin Price</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Lock P.</th>
                             <th scope="col">Total</th>
                             <th scope="col">Status</th>
                         </tr>
@@ -264,6 +265,8 @@
                                     .append(coin.AmountStr))
                                 .append($('<td>', { id: `td_${coin.Coin}_Price` })
                                     .append(coin.PriceStr))
+                                .append($('<td>', { id: `td_${coin.Coin}_LockedPrice` })
+                                    .append(coin.LockedPriceStr))
                                 .append($('<td>', { id: `td_${coin.Coin}_Total` })
                                     .append(coin.TotalStr))
                                 .append($('<td>')
@@ -274,6 +277,7 @@
                             //debugger;
                             $(`#td_${coin.Coin}_Amount`).html(coin.AmountStr);
                             $(`#td_${coin.Coin}_Price`).html(coin.PriceStr);
+                            $(`#td_${coin.Coin}_LockedPrice`).html(coin.LockedPriceStr);
                             $(`#td_${coin.Coin}_Total`).html(coin.TotalStr);
                             $(`#td_${coin.Coin}_IsLocked`).html(coin.IsLocked ? 'Locked' : '');
                         }

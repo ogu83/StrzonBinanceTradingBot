@@ -7,7 +7,7 @@ Interface:
 3.	The portfolio graph performance should be displayed - INPROGRESS
 4.	A checkbox to select all coins in the wallet once for all and lock it should be introduced -DONE
 5.	The dropdown in demo wallet should not display the prices between brackets -DONE
-6.	In the wallet tabulated format, the locked price should have a column in the table. -INPROGRESS
+6.	In the wallet tabulated format, the locked price should have a column in the table. -DONE
 7.	Exchange fees should be displayed above the table. -INPROGRESS
 8.	At the header it should not display the email or Hello, it can be only “Profile” button -INPROGRESS
 9.	The name of the website should be pixfolio  -INPROGRESS
