@@ -10,7 +10,7 @@ Interface:
 6.	In the wallet tabulated format, the locked price should have a column in the table. -DONE
 7.	Exchange fees should be displayed above the table. -INPROGRESS
 8.	At the header it should not display the email or Hello, it can be only “Profile” button -INPROGRESS
-9.	The name of the website should be pixfolio  -INPROGRESS
+9.	The name of the website should be pixfolio  -DONE
 
 Functioning:
 1.	A wrong email format can be registered such as oguz@hotmail, this should be detected. -INPROGRESS

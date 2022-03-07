@@ -2,7 +2,6 @@ using Binance.Net;
 using Binance.Net.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 using NLog;
 using NLog.Web;
 using StrzonBinanceTradingBot.Data;
