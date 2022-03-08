@@ -12,6 +12,7 @@ Interface:
     -NOT POSSIBLE! BINABCE EXCHANGE FEES ARE DEPEND ON USER AND WOULD BE DIFFERENT FOR EVERYONE AND EACH SYMBOL AND AMOUNT OF TRADE.
 8.	At the header it should not display the email or Hello, it can be only “Profile” button -DONE
 9.	The name of the website should be pixfolio  -DONE
+10. A Reset Button Added to the Demo Wallet Page.
 
 Functioning:
 1.	A wrong email format can be registered such as oguz@hotmail, this should be detected. -DONE
