@@ -17,4 +17,5 @@ public interface IBalanceService
     List<BalanceEntity>? GetLockedBalances(bool onlyDemoWallets);
     List<BalanceEntity>? GetBalances(bool onlyDemoWallets);
     Task UpdateBalanceUSDTRates(bool onlyDemoWallets);
+    List<BalanceHistoryEntity>? GetBalanceHistory(int walletId);
 }

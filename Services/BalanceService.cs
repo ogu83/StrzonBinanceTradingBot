@@ -1,5 +1,6 @@
 // using System.Transactions;
 using Binance.Net.Interfaces;
+using Microsoft.EntityFrameworkCore;
 using StrzonBinanceTradingBot.Data;
 using StrzonBinanceTradingBot.Helpers;
 
@@ -26,6 +27,7 @@ public class BalanceService : IBalanceService
 
     private void addBalanceLog(int walletId, string userName, BalanceHistoryEntity.Action reason)
     {
+        var wallet = _context.DemoWallets?.SingleOrDefault(x => x.Id == walletId);
         var balances = GetBalancesOfWalletQuery(walletId, userName);
         var balanceHistory = new BalanceHistoryEntity
         {
@@ -40,6 +42,7 @@ public class BalanceService : IBalanceService
             USDTRate = x.USDTRate,
         }).ToList();
         balanceHistory.Rows = rows;
+        balanceHistory.USDTBalance = wallet?.USDTBalance ?? 0m;
         _context.BalancesHistory?.Add(balanceHistory);
 
         _context.SaveChanges();
@@ -220,6 +223,16 @@ public class BalanceService : IBalanceService
         }
         var retval = query?.ToList();
         return retval;
+    }
+
+    public List<BalanceHistoryEntity>? GetBalanceHistory(int walletId)
+    {
+        var history = _context.BalancesHistory?
+                              .Where(x => x.DemoWallet_ID == walletId)
+                              .OrderBy(x => x.Date)
+                              .Include(x=>x.Rows)
+                              .ToList();
+        return history;
     }
 
     public async Task UpdateBalanceUSDTRates(bool onlyDemoWallets)

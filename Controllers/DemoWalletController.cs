@@ -41,6 +41,66 @@ public class DemoWalletController : Controller
         return View(model);
     }
 
+    public IActionResult ResetWallet()
+    {
+        var username = User.Identity?.Name ?? "";
+        var wallet = _demoWalletService.GetOrCreate(username);
+        if (wallet == null)
+        {
+            throw new ArgumentNullException("There is no wallet for this user");
+        }
+        _demoWalletService.DeleteDemoWallet(wallet.Id);
+        _demoWalletService.Create(0, username);
+        return RedirectToAction(nameof(Index));
+    }
+
+    public IActionResult GetPerformanceChart()
+    {
+        var response = new PerformanceGraphData();
+        try
+        {
+            var username = User.Identity?.Name ?? "";
+            var wallet = _demoWalletService.GetOrCreate(username);
+            if (wallet == null)
+            {
+                throw new ArgumentNullException("There is no wallet for this user");
+            }
+
+            var history = _balanceService.GetBalanceHistory(wallet.Id);
+            var reducedHistory = new List<Data.BalanceHistoryEntity>();
+
+            if (history != null)
+            {
+                for (int i = 0; i < history.Count(); i++)
+                {
+                    if (i <= 0 || (history[i].TotalBalanceInUSDT != history[i - 1].TotalBalanceInUSDT))
+                    {
+                        reducedHistory.Add(history[i]);
+                    }
+                }
+
+                response.labels = reducedHistory.Select(x => x.Date.ToString("yyyy-MM-dd HH:mm")).ToArray();
+
+                var uds = new ChartDecimalDataSet
+                {
+                    label = "USDT",
+                    data = reducedHistory.Select(x => x.TotalBalanceInUSDT).ToArray()
+                };
+                response.datasets = new ChartDecimalDataSet[] { uds };
+            }
+        }
+        catch (Exception ex)
+        {
+            response.Error = new ErrorViewModel
+            {
+                ErrorCode = "GetPerformanceChart",
+                Message = ex.Message
+            };
+        }
+
+        return Json(response);
+    }
+
     public IActionResult GetTrades()
     {
         var response = new TradesViewModel();

@@ -16,7 +16,7 @@
                 <h4><span class="text-muted">Available: </span><span id="txtBalance"></span></h4>
                 <h4><span class="text-muted">Total: </span><span id="txtTotalBalance"></span></h4>
                 <div>
-                    <button class="btn btn-danger">Reset Wallet</button>
+                    <a class="btn btn-danger" asp-action="ResetWallet">Reset Wallet</a>
                 </div>
             </div>
             <div class="col">
@@ -110,8 +110,52 @@
     </div>
 </div>
 
+<div class="card">
+    <div class="card-header">
+        Performence Chart
+    </div>
+    <div class="card-body">
+        <div>
+            <canvas id="chartPerformance"></canvas>
+        </div>
+    </div>
+</div>
+
 @section Scripts {
 <script>
+
+    var chart;
+
+    function GetPerformanceChart(callback) {
+        $.ajax({
+            url: "/DemoWallet/GetPerformanceChart",
+            method: "GET",
+            dataType: "json",
+            data: {},
+            success: function (result) {
+                var data = JSON.parse(result.ChartDataJSON);
+                
+                const config = {
+                    type: 'line',
+                    data: data,
+                };
+                
+                const ctx = $('#chartPerformance');
+                if (chart) {
+                    chart.destroy();
+                }
+                chart = new Chart(ctx, config);
+                
+                if (callback)
+                    callback();
+            },
+            error: function () {
+
+            },
+            timeout: 50000
+        });
+
+    }
 
     function GetTrades(callback) {
         $.ajax({
@@ -385,9 +429,11 @@
         GetBalances(function () {
             GetCoins(function () {
                 GetTrades(function () {
-                    updatingUI = false;
-                    if (recurse)
-                        setTimeout(updateUI, updateInterval, true);
+                    GetPerformanceChart(function () {
+                        updatingUI = false;
+                        if (recurse)
+                            setTimeout(updateUI, updateInterval, true);
+                    });
                 });
             });
         });
@@ -401,7 +447,7 @@
         $('#chk_All').change(function () {
             if (this.checked)
                 $(".chk-coin").prop("checked", true);
-            else 
+            else
                 $(".chk-coin").prop("checked", false);
         });
     });

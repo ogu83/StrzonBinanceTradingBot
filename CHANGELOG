@@ -8,16 +8,18 @@ Interface:
 4.	A checkbox to select all coins in the wallet once for all and lock it should be introduced -DONE
 5.	The dropdown in demo wallet should not display the prices between brackets -DONE
 6.	In the wallet tabulated format, the locked price should have a column in the table. -DONE
-7.	Exchange fees should be displayed above the table. -INPROGRESS
+7.	Exchange fees should be displayed above the table. 
+    -NOT POSSIBLE! BINABCE EXCHANGE FEES ARE DEPEND ON USER AND WOULD BE DIFFERENT FOR EVERYONE AND EACH SYMBOL AND AMOUNT OF TRADE.
 8.	At the header it should not display the email or Hello, it can be only “Profile” button -DONE
 9.	The name of the website should be pixfolio  -DONE
 
 Functioning:
 1.	A wrong email format can be registered such as oguz@hotmail, this should be detected. -DONE
 2.	An email service should be introduced for email verification and forgetting the password 
-    (can you please suggest some viable solutions you know?) -INPROGRESS (Send Grid Will be used.)
+    (can you please suggest some viable solutions you know?) -INPROGRESS (SEND GRID WILL BE USED)
 3.	Why it’s mandatory to have USDT in the demo wallet? If we put 0 USDT it take by default 10 USDT -DONE
 4.	The bot always buys low and sell high, please refer to the excel sheet, 
     always it buys lower by 1-1.5% of the locked price level and sell 
-    higher by 1-1.5% - it should be the opposite -INPROGRESS
+    higher by 1-1.5% - it should be the opposite 
+    -INPROGRESS : A NEW APPROACH WOULD BE INTRODUCED 
 5.	Sometime when the bot re-buy it selects randomly a coin and deduct a fraction of it (check the highlighted amounts in the excel sheet). -OK
